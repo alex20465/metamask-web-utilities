@@ -1,7 +1,7 @@
 .EXPORT_ALL_VARIABLES:
 ENV ?= dev
 
-PROJECT_NAME := react-template
+PROJECT_NAME := trezor-web-tools
 ROOT_DIR := $(CURDIR)
 
 FRONTEND_DIR := ${ROOT_DIR}
