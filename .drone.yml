@@ -1,0 +1,22 @@
+kind: pipeline
+type: docker
+name: deploy
+
+trigger:
+  event:
+    - tag
+
+steps:
+  - name: deploy
+    image: dokku/ci-docker-image
+    environment:
+      GIT_DEPTH: 0
+      SSH_PRIVATE_KEY:
+        from_secret: dokku-private-key
+      BRANCH: ${DRONE_REPO_BRANCH}
+      CI_BRANCH_NAME: ${DRONE_REPO_NAME}
+      CI_COMMIT: ${DRONE_COMMIT}
+      GIT_PUSH_FLAGS: "--force"
+      GIT_REMOTE_URL: ssh://dokku@app.greate.eu:9122/react-template-${DRONE_TAG}
+    commands:
+      - dokku-deploy
