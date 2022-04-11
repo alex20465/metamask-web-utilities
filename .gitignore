@@ -21,6 +21,3 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# its a template, lets avoid locks
-yarn.lock
