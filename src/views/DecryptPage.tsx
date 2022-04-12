@@ -18,23 +18,27 @@ import {
 } from '@chakra-ui/react'
 import React, { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { encryptText } from '../helpers/crypto'
+import { decryptText } from '../helpers/crypto'
 import { BaseLayout } from '../layouts/BaseLayout'
 import { useTrezor } from '../providers/trezor'
 
-export const EncryptPage: React.FC = () => {
+export const DecryptPage: React.FC = () => {
     const [content, setContent] = useState<string>('')
-    const [encrypted, setEncrypted] = useState<string | null>(null)
-    const { onCopy, hasCopied } = useClipboard(encrypted || '')
+    const [decrypted, setDecrypted] = useState<string | null>(null)
+    const [error, setError] = useState<Error | null>(null)
+    const { onCopy, hasCopied } = useClipboard(decrypted || '')
+
     const navigate = useNavigate()
     const { encryptionKey } = useTrezor()
 
-    const onEncrypt = useCallback(async () => {
-        if (!encryptionKey) {
-            throw new Error('No encryption key')
+    const onDecrypt = useCallback(async () => {
+        if (!encryptionKey) return
+        const d = await decryptText(encryptionKey, content)
+
+        if (!d) {
+            return setError(new Error('Decryption was unsuccessful.'))
         }
-        const encryptedContent = await encryptText(encryptionKey, content)
-        setEncrypted(encryptedContent)
+        setDecrypted(d)
     }, [content, encryptionKey])
 
     const onChangeContent = useCallback(
@@ -42,21 +46,24 @@ export const EncryptPage: React.FC = () => {
             setContent(event.target.value),
         []
     )
-
     return (
-        <BaseLayout>
+        <BaseLayout
+            error={error || undefined}
+            onClearError={() => {
+                setError(null)
+                setDecrypted(null)
+            }}
+        >
             <Modal
-                onClose={() => setEncrypted(null)}
-                isOpen={encrypted !== null}
+                onClose={() => setDecrypted(null)}
+                isOpen={decrypted !== null}
             >
                 <ModalOverlay opacity={0.3} />
                 <ModalContent>
-                    <ModalHeader>Encrypted message</ModalHeader>
+                    <ModalHeader>Decrypted message</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <Textarea readOnly rows={20}>
-                            {encrypted}
-                        </Textarea>
+                        <Textarea value={decrypted || ''} rows={20} />
                     </ModalBody>
                     <ModalFooter>
                         <Button
@@ -75,9 +82,10 @@ export const EncryptPage: React.FC = () => {
             <Center h="100%">
                 <VStack gap={2} maxW="400px" w="100%">
                     <Text as={'h1'} fontSize={32}>
-                        Secret Message
+                        Decrypted Message
                     </Text>
                     <Textarea
+                        disabled={!!!encryptionKey}
                         value={content}
                         rows={10}
                         onChange={onChangeContent}
@@ -93,9 +101,9 @@ export const EncryptPage: React.FC = () => {
                             colorScheme={'green'}
                             width={'100%'}
                             disabled={content.length === 0}
-                            onClick={onEncrypt}
+                            onClick={onDecrypt}
                         >
-                            Encrypt
+                            Decrypt
                         </Button>
                     </HStack>
                 </VStack>

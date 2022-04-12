@@ -8,13 +8,23 @@ import {
     AlertIcon,
     AlertTitle,
     AlertDescription,
+    Button,
 } from '@chakra-ui/react'
 import { useTrezor } from '../providers/trezor'
 
-export const BaseLayout: React.FC = ({ children }) => {
-    const { error, initiated, activated } = useTrezor()
+type Props = {
+    error?: Error
+    onClearError?: () => void
+}
 
-    if (error) {
+export const BaseLayout: React.FC<Props> = ({
+    children,
+    error: pageError,
+    onClearError,
+}) => {
+    const { error, initiated, activated } = useTrezor()
+    const err = error || pageError
+    if (err) {
         return (
             <HStack h="100vh">
                 <Center flexGrow={1} h="100%">
@@ -27,8 +37,19 @@ export const BaseLayout: React.FC = ({ children }) => {
                         <AlertIcon boxSize={'40px'} />
                         <AlertTitle mt={4}>ERROR</AlertTitle>
                         <AlertDescription>
-                            <code>{error.message}</code>
+                            <code>{err.message}</code>
                         </AlertDescription>
+
+                        {onClearError && pageError ? (
+                            <Button
+                                colorScheme={'red'}
+                                variant={'link'}
+                                aria-label="close-alert"
+                                onClick={onClearError}
+                            >
+                                SKIP
+                            </Button>
+                        ) : null}
                     </Alert>
                 </Center>
             </HStack>

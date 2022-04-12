@@ -49,7 +49,7 @@ export const TrezorProvider: React.FC = ({ children }) => {
         if (!initiated) return
 
         TrezorConnect.cipherKeyValue({
-            key: 'Activate Trezor Web Tools ?',
+            key: 'TWebTools: Activate ?',
             value: DEFAULT_NONCE,
             askOnDecrypt: true,
             askOnEncrypt: true,

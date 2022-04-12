@@ -6,6 +6,7 @@ import { IndexPage } from '../views/IndexPage'
 import { TrezorProvider } from '../providers/trezor'
 import { ChakraProvider } from '@chakra-ui/react'
 import { EncryptPage } from '../views/EncryptPage'
+import { DecryptPage } from '../views/DecryptPage'
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<IndexPage />} />
                         <Route path="/encrypt" element={<EncryptPage />} />
+                        <Route path="/decrypt" element={<DecryptPage />} />
                     </Routes>
                 </BrowserRouter>
             </TrezorProvider>
