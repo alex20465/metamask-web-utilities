@@ -1,8 +1,11 @@
+import { ArrowBackIcon } from '@chakra-ui/icons'
 import {
     Alert,
     AlertIcon,
     Button,
     Center,
+    HStack,
+    IconButton,
     Modal,
     ModalBody,
     ModalCloseButton,
@@ -10,11 +13,13 @@ import {
     ModalFooter,
     ModalHeader,
     ModalOverlay,
+    Text,
     Textarea,
     useClipboard,
     VStack,
 } from '@chakra-ui/react'
 import React, { useCallback, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { encryptText } from '../helpers/crypto'
 import { BaseLayout } from '../layouts/BaseLayout'
 import { useTrezor } from '../providers/trezor'
@@ -23,7 +28,7 @@ export const EncryptPage: React.FC = () => {
     const [content, setContent] = useState<string>('')
     const [encrypted, setEncrypted] = useState<string | null>(null)
     const { onCopy, hasCopied } = useClipboard(encrypted || '')
-
+    const navigate = useNavigate()
     const { encryptionKey, initiated, activated } = useTrezor()
 
     const onEncrypt = useCallback(async () => {
@@ -48,7 +53,7 @@ export const EncryptPage: React.FC = () => {
             >
                 <ModalOverlay opacity={0.3} />
                 <ModalContent>
-                    <ModalHeader>Encrypted Message</ModalHeader>
+                    <ModalHeader>Encrypted message</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         <Textarea readOnly rows={20}>
@@ -71,6 +76,9 @@ export const EncryptPage: React.FC = () => {
             </Modal>
             <Center h="100%">
                 <VStack gap={2} maxW="400px" w="100%">
+                    <Text as={'h1'} fontSize={32}>
+                        Secret Message
+                    </Text>
                     <Alert hidden={!!encryptionKey} status="warning">
                         <AlertIcon />
                         No Encryption Key
@@ -78,17 +86,25 @@ export const EncryptPage: React.FC = () => {
                     <Textarea
                         disabled={!!!encryptionKey}
                         value={content}
+                        rows={10}
                         onChange={onChangeContent}
-                        placeholder="Content to encrypt"
+                        placeholder="my secret message ..."
                     />
-                    <Button
-                        colorScheme={'green'}
-                        width={'100%'}
-                        disabled={content.length === 0}
-                        onClick={onEncrypt}
-                    >
-                        Encrypt
-                    </Button>
+                    <HStack>
+                        <IconButton
+                            aria-label="go-back"
+                            onClick={() => navigate('/')}
+                            icon={<ArrowBackIcon />}
+                        />
+                        <Button
+                            colorScheme={'green'}
+                            width={'100%'}
+                            disabled={content.length === 0}
+                            onClick={onEncrypt}
+                        >
+                            Encrypt
+                        </Button>
+                    </HStack>
                 </VStack>
             </Center>
         </BaseLayout>
