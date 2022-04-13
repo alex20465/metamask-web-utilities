@@ -1,69 +1,78 @@
-import { Center, HStack, IconButton, Text, VStack } from '@chakra-ui/react'
+import { Center, Heading, HStack, IconButton, VStack } from '@chakra-ui/react'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { BaseLayout } from '../layouts/BaseLayout'
 import {
-    CheckCircleIcon,
-    EditIcon,
-    LockIcon,
-    UnlockIcon,
-} from '@chakra-ui/icons'
+    DecryptIcon,
+    EncryptIcon,
+    SignIcon,
+    VerifyIcon,
+} from '../icons/Encryption'
 export const IndexPage: React.FC = () => {
     return (
         <BaseLayout>
             <Center h="100%">
                 <VStack>
-                    <Text as="h1" fontSize={64}>
+                    <Heading as="h1" color="#00ebff" size={'2xl'} mb={'32px'}>
                         Trezor Web Tools
-                    </Text>
+                    </Heading>
+
                     <HStack gap={8}>
                         <VStack gap={2}>
                             <IconButton
-                                variant="ghost"
+                                variant="outline"
                                 aria-label="encrypt"
-                                colorScheme={'green'}
-                                icon={<LockIcon boxSize={50} />}
+                                colorScheme={'orange'}
+                                icon={<EncryptIcon boxSize={'80px'} />}
                                 to="/encrypt"
-                                boxSize={150}
+                                boxSize={'150px'}
                                 as={Link}
                             />
-                            <Text>Encrypt</Text>
+                            <Heading as="h2" fontSize={'lg'}>
+                                Encrypt
+                            </Heading>
                         </VStack>
                         <VStack gap={2}>
                             <IconButton
-                                variant="ghost"
+                                variant="outline"
                                 aria-label="decrypt"
                                 colorScheme={'red'}
-                                icon={<UnlockIcon boxSize={50} />}
+                                icon={<DecryptIcon boxSize={'80px'} />}
                                 to="/decrypt"
-                                boxSize={150}
+                                boxSize={'150px'}
                                 as={Link}
                             />
-                            <Text>Decrypt</Text>
+                            <Heading as="h2" fontSize={'lg'}>
+                                Decrypt
+                            </Heading>
                         </VStack>
                         <VStack gap={2}>
                             <IconButton
                                 disabled={true}
                                 title="Coming soon"
-                                variant="ghost"
+                                variant="outline"
                                 aria-label="sign"
                                 colorScheme={'blue'}
-                                icon={<EditIcon boxSize={50} />}
-                                boxSize={150}
+                                icon={<SignIcon boxSize={'80px'} />}
+                                boxSize={'150px'}
                             />
-                            <Text>Sign</Text>
+                            <Heading as="h2" fontSize={'lg'}>
+                                Sign
+                            </Heading>
                         </VStack>
                         <VStack gap={2}>
                             <IconButton
                                 disabled={true}
                                 title="Coming soon"
-                                variant="ghost"
+                                variant="outline"
                                 aria-label="verify"
                                 colorScheme={'orange'}
-                                icon={<CheckCircleIcon boxSize={50} />}
-                                boxSize={150}
+                                icon={<VerifyIcon boxSize={'80px'} />}
+                                boxSize={'150px'}
                             />
-                            <Text>Verify</Text>
+                            <Heading as="h2" fontSize={'lg'}>
+                                Verify
+                            </Heading>
                         </VStack>
                     </HStack>
                 </VStack>

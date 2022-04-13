@@ -1,7 +1,7 @@
-import { ArrowBackIcon } from '@chakra-ui/icons'
 import {
     Button,
     Center,
+    Heading,
     HStack,
     IconButton,
     Modal,
@@ -11,7 +11,6 @@ import {
     ModalFooter,
     ModalHeader,
     ModalOverlay,
-    Text,
     Textarea,
     useClipboard,
     VStack,
@@ -21,6 +20,7 @@ import { useNavigate } from 'react-router-dom'
 import { decryptText } from '../helpers/crypto'
 import { BaseLayout } from '../layouts/BaseLayout'
 import { useTrezor } from '../providers/trezor'
+import { ArrowBackIcon } from '@chakra-ui/icons/src/ArrowBack'
 
 export const DecryptPage: React.FC = () => {
     const [content, setContent] = useState<string>('')
@@ -60,10 +60,14 @@ export const DecryptPage: React.FC = () => {
             >
                 <ModalOverlay opacity={0.3} />
                 <ModalContent>
-                    <ModalHeader>Decrypted message</ModalHeader>
+                    <ModalHeader>
+                        <Heading as="h2" fontSize={'xl'}>
+                            DECRYPTED MESSAGE
+                        </Heading>
+                    </ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <Textarea value={decrypted || ''} rows={20} />
+                        <Textarea value={decrypted || ''} rows={10} />
                     </ModalBody>
                     <ModalFooter>
                         <Button
@@ -74,22 +78,22 @@ export const DecryptPage: React.FC = () => {
                                 onCopy()
                             }}
                         >
-                            {hasCopied ? 'Copied !' : 'Copy to Clipboard'}
+                            {hasCopied ? 'copied !' : 'copy to clipboard'}
                         </Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
             <Center h="100%">
                 <VStack gap={2} maxW="400px" w="100%">
-                    <Text as={'h1'} fontSize={32}>
-                        Decrypted Message
-                    </Text>
+                    <Heading as={'h1'} fontSize={'2xl'}>
+                        DECRYPT MESSAGE
+                    </Heading>
                     <Textarea
                         disabled={!!!encryptionKey}
                         value={content}
                         rows={10}
                         onChange={onChangeContent}
-                        placeholder="my secret message ..."
+                        placeholder="U2FsdGVkX18GA7U9KuP+tUXeSmpuNV5G6/SV..."
                     />
                     <HStack>
                         <IconButton
@@ -103,7 +107,7 @@ export const DecryptPage: React.FC = () => {
                             disabled={content.length === 0}
                             onClick={onDecrypt}
                         >
-                            Decrypt
+                            decrypt
                         </Button>
                     </HStack>
                 </VStack>

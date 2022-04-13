@@ -1,7 +1,7 @@
-import { ArrowBackIcon } from '@chakra-ui/icons'
 import {
     Button,
     Center,
+    Heading,
     HStack,
     IconButton,
     Modal,
@@ -11,7 +11,6 @@ import {
     ModalFooter,
     ModalHeader,
     ModalOverlay,
-    Text,
     Textarea,
     useClipboard,
     VStack,
@@ -21,6 +20,7 @@ import { useNavigate } from 'react-router-dom'
 import { encryptText } from '../helpers/crypto'
 import { BaseLayout } from '../layouts/BaseLayout'
 import { useTrezor } from '../providers/trezor'
+import { ArrowBackIcon } from '@chakra-ui/icons/src/ArrowBack'
 
 export const EncryptPage: React.FC = () => {
     const [content, setContent] = useState<string>('')
@@ -51,12 +51,14 @@ export const EncryptPage: React.FC = () => {
             >
                 <ModalOverlay opacity={0.3} />
                 <ModalContent>
-                    <ModalHeader>Encrypted message</ModalHeader>
+                    <ModalHeader>
+                        <Heading as="h2" fontSize={'xl'}>
+                            ENCRYPTED MESSAGE
+                        </Heading>
+                    </ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <Textarea readOnly rows={20}>
-                            {encrypted}
-                        </Textarea>
+                        <Textarea value={encrypted || ''} rows={10} />
                     </ModalBody>
                     <ModalFooter>
                         <Button
@@ -67,16 +69,16 @@ export const EncryptPage: React.FC = () => {
                                 onCopy()
                             }}
                         >
-                            {hasCopied ? 'Copied !' : 'Copy to Clipboard'}
+                            {hasCopied ? 'copied !' : 'copy to clipboard'}
                         </Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
             <Center h="100%">
                 <VStack gap={2} maxW="400px" w="100%">
-                    <Text as={'h1'} fontSize={32}>
-                        Secret Message
-                    </Text>
+                    <Heading as={'h1'} fontSize={'2xl'}>
+                        ENCRYPT MESSAGE
+                    </Heading>
                     <Textarea
                         value={content}
                         rows={10}
@@ -95,7 +97,7 @@ export const EncryptPage: React.FC = () => {
                             disabled={content.length === 0}
                             onClick={onEncrypt}
                         >
-                            Encrypt
+                            encrypt
                         </Button>
                     </HStack>
                 </VStack>
