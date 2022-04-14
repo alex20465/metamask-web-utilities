@@ -1,7 +1,7 @@
 import React from 'react'
 import './App.css'
 
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { HashRouter, Route, Routes } from 'react-router-dom'
 import { IndexPage } from '../views/IndexPage'
 import { TrezorProvider } from '../providers/trezor'
 import { extendTheme, ChakraProvider, ThemeConfig } from '@chakra-ui/react'
@@ -33,13 +33,13 @@ function App() {
     return (
         <ChakraProvider theme={theme}>
             <TrezorProvider>
-                <BrowserRouter>
+                <HashRouter>
                     <Routes>
                         <Route path="/" element={<IndexPage />} />
                         <Route path="/encrypt" element={<EncryptPage />} />
                         <Route path="/decrypt" element={<DecryptPage />} />
                     </Routes>
-                </BrowserRouter>
+                </HashRouter>
             </TrezorProvider>
         </ChakraProvider>
     )
