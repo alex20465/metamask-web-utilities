@@ -5,7 +5,7 @@ const HD_HARDENED = 0x80000000
 const PATH = [(10016 | HD_HARDENED) >>> 0, 0]
 
 const DEFAULT_NONCE =
-    '2d650551248d792eabf628f451200d7f51cb63e46aadcbb1038aacb05e8c8aee2d650551248d792eabf628f451200d7f51cb63e46aadcbb1038aacb05e8c8aee'
+    '6c976aad136ecb3a9555afca84216f79cad017071c16fb9e930dfebeaa0fdd5506eede3366abd31b8dd3b80c3701096638be157eb065b1ba1cfa89d711fc3fa2'
 
 type TrezorContext = {
     initiated: boolean

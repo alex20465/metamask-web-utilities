@@ -9,7 +9,6 @@ export const encryptText = async (
     text: string
 ): Promise<string> => {
     const res = await requestSecret('TWebTools: Secret Key Access ?', secret)
-
     if (res.success && res.payload.value.length === 128) {
         return AES.encrypt(text, res.payload.value).toString()
     } else {
