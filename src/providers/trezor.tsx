@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import TrezorConnect from 'trezor-connect'
+import TrezorConnect, { DEVICE, DEVICE_EVENT } from 'trezor-connect'
 
 const HD_HARDENED = 0x80000000
 const PATH = [(10016 | HD_HARDENED) >>> 0, 0]
@@ -26,7 +26,7 @@ export const TrezorProvider: React.FC = ({ children }) => {
     const [activated, setActivated] = useState<boolean>(false)
     const [encryptionKey, setEncryptionKey] = useState<string>()
 
-    const [error, setError] = useState<Error>()
+    const [error, setError] = useState<Error | null>(null)
 
     useEffect(() => {
         TrezorConnect.init({
@@ -68,13 +68,30 @@ export const TrezorProvider: React.FC = ({ children }) => {
             .catch((err) => setError(err))
     }, [initiated])
 
+    useEffect(() => {
+        if (activated && initiated) {
+            TrezorConnect.on(DEVICE_EVENT, (event) => {
+                if (event.type === DEVICE.DISCONNECT) {
+                    setActivated(false)
+                    setInitiated(false)
+                    setError(new Error('Device Disconnected'))
+                } else if (event.type === DEVICE.CONNECT) {
+                    setInitiated(true)
+                    setError(null)
+                }
+            })
+        }
+
+        return () => TrezorConnect.removeAllListeners()
+    }, [activated, initiated])
+
     return (
         <context.Provider
             value={{
                 initiated,
                 activated,
                 encryptionKey,
-                error,
+                error: error || undefined,
                 trezor: TrezorConnect,
             }}
         >
