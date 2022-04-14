@@ -21,6 +21,17 @@ code/autofix:
 code/generate:
 	@yarn run generate
 
+icon/generate/%:
+	inkscape ./src/logo.svg --export-filename ./public/logo$*.png --export-height $* --export-width $*
+
+icon/generate:
+	@make icon/generate/16
+	@make icon/generate/32
+	@make icon/generate/64
+	@make icon/generate/192
+	@make icon/generate/512
+	convert ./public/logo16.png ./public/logo32.png ./public/logo64.png ./public/logo192.png ./public/logo512.png ./public/favicon.ico
+
 run:
 	@yarn run start
 

@@ -35,6 +35,7 @@ export const EncryptPage: React.FC = () => {
         }
         const encryptedContent = await encryptText(encryptionKey, content)
         setEncrypted(encryptedContent)
+        setContent('') // unset secret message
     }, [content, encryptionKey])
 
     const onChangeContent = useCallback(
