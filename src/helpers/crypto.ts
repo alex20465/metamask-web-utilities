@@ -1,4 +1,4 @@
-import { AES, enc } from 'crypto-js'
+import CryptoJS from 'crypto-js'
 import TrezorConnect from 'trezor-connect'
 
 const HD_HARDENED = 0x80000000
@@ -10,7 +10,7 @@ export const encryptText = async (
 ): Promise<string> => {
     const res = await requestSecret('TWebTools: Secret Key Access ?', secret)
     if (res.success && res.payload.value.length === 128) {
-        return AES.encrypt(text, res.payload.value).toString()
+        return CryptoJS.AES.encrypt(text, res.payload.value).toString()
     } else {
         throw new Error('Failed to request decryption')
     }
@@ -23,9 +23,24 @@ export const decryptText = async (
     const res = await requestSecret('TWebTools: Secret Key Access ?', secret)
 
     if (res.success && res.payload.value.length === 128) {
-        return AES.decrypt(text, res.payload.value, {}).toString(enc.Utf8)
+        return CryptoJS.AES.decrypt(text, res.payload.value, {}).toString(
+            CryptoJS.enc.Utf8
+        )
     } else {
         throw new Error('Failed to request decryption')
+    }
+}
+
+export const signText = async (
+    secret: string,
+    text: string
+): Promise<string> => {
+    const res = await requestSecret('TWebTools: Secret Key Access ?', secret)
+
+    if (res.success && res.payload.value.length === 128) {
+        return CryptoJS.HmacSHA1(text, res.payload.value).toString()
+    } else {
+        throw new Error('Failed to request signature')
     }
 }
 

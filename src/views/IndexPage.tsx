@@ -48,11 +48,11 @@ export const IndexPage: React.FC = () => {
                         </VStack>
                         <VStack gap={2}>
                             <IconButton
-                                disabled={true}
-                                title="Coming soon"
                                 variant="outline"
                                 aria-label="sign"
                                 colorScheme={'blue'}
+                                to="/sign"
+                                as={Link}
                                 icon={<SignIcon boxSize={'80px'} />}
                                 boxSize={'150px'}
                             />
