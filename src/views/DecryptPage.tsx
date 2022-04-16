@@ -19,27 +19,26 @@ import React, { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { decryptText } from '../helpers/crypto'
 import { BaseLayout } from '../layouts/BaseLayout'
-import { useTrezor } from '../providers/trezor'
 import { ArrowBackIcon } from '@chakra-ui/icons/src/ArrowBack'
+import { useTrezor } from '../providers/trezor'
 
 export const DecryptPage: React.FC = () => {
     const [content, setContent] = useState<string>('')
     const [decrypted, setDecrypted] = useState<string | null>(null)
     const [error, setError] = useState<Error | null>(null)
     const { onCopy, hasCopied } = useClipboard(decrypted || '')
-
+    const { address } = useTrezor()
     const navigate = useNavigate()
-    const { encryptionKey } = useTrezor()
 
     const onDecrypt = useCallback(async () => {
-        if (!encryptionKey) return
-        const d = await decryptText(encryptionKey, content)
+        if (!address) return
+        const d = await decryptText(address, content)
 
         if (!d) {
             return setError(new Error('Decryption was unsuccessful.'))
         }
         setDecrypted(d)
-    }, [content, encryptionKey])
+    }, [content, address])
 
     const onChangeContent = useCallback(
         (event: React.ChangeEvent<HTMLTextAreaElement>) =>
@@ -89,7 +88,6 @@ export const DecryptPage: React.FC = () => {
                         DECRYPT MESSAGE
                     </Heading>
                     <Textarea
-                        disabled={!!!encryptionKey}
                         value={content}
                         rows={10}
                         onChange={onChangeContent}

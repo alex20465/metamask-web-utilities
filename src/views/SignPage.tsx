@@ -23,7 +23,6 @@ import React, { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { signText } from '../helpers/crypto'
 import { BaseLayout } from '../layouts/BaseLayout'
-import { useTrezor } from '../providers/trezor'
 
 export const SignPage: React.FC = () => {
     const [content, setContent] = useState<string>('')
@@ -33,14 +32,12 @@ export const SignPage: React.FC = () => {
     const { onCopy, hasCopied } = useClipboard(signature || '')
 
     const navigate = useNavigate()
-    const { encryptionKey } = useTrezor()
 
     const onSign = useCallback(async () => {
-        if (!encryptionKey) return
-        const { address, signature } = await signText(encryptionKey, content)
+        const { address, signature } = await signText(content)
         setSignature(signature)
         setAddress(address)
-    }, [content, encryptionKey])
+    }, [content])
 
     const onChangeContent = useCallback(
         (event: React.ChangeEvent<HTMLTextAreaElement>) =>

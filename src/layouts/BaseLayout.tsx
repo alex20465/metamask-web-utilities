@@ -9,6 +9,7 @@ import {
     AlertTitle,
     AlertDescription,
     Button,
+    VStack,
 } from '@chakra-ui/react'
 import { useTrezor } from '../providers/trezor'
 
@@ -22,7 +23,7 @@ export const BaseLayout: React.FC<Props> = ({
     error: pageError,
     onClearError,
 }) => {
-    const { error, initiated, activated } = useTrezor()
+    const { error, initiated, activated, address } = useTrezor()
     const err = error || pageError
     if (err) {
         return (
@@ -67,10 +68,11 @@ export const BaseLayout: React.FC<Props> = ({
     }
 
     return (
-        <HStack h={'100vh'}>
-            <Box flexGrow={1} h="100%">
+        <VStack h={'100vh'}>
+            <Box flexGrow={1} h="100%" width={'100%'} p={14}>
                 {children}
             </Box>
-        </HStack>
+            <Box p={2}>{address}</Box>
+        </VStack>
     )
 }

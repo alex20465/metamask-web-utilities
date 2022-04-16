@@ -24,10 +24,14 @@ import { verifyText } from '../helpers/crypto'
 import { BaseLayout } from '../layouts/BaseLayout'
 
 import { CheckCircleIcon, NotAllowedIcon } from '@chakra-ui/icons'
+import { useTrezor } from '../providers/trezor'
 export const VerifyPage: React.FC = () => {
     const [content, setContent] = useState<string>('')
     const [signature, setSignature] = useState<string | null>(null)
-    const [address, setAddress] = useState<string | null>(null)
+    const { address: currentAddress } = useTrezor()
+    const [address, setAddress] = useState<string | null>(
+        currentAddress || null
+    )
     const [verified, setIsVerified] = useState<boolean | null>(null)
 
     const [error, setError] = useState<Error | null>(null)
@@ -127,7 +131,7 @@ export const VerifyPage: React.FC = () => {
                         <FormLabel>Message</FormLabel>
                         <Textarea
                             value={content}
-                            rows={10}
+                            rows={5}
                             onChange={onChangeContent}
                             placeholder="signed message ..."
                         />

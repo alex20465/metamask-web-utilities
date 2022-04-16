@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import TrezorConnect, { DEVICE, DEVICE_EVENT } from 'trezor-connect'
-
-const HD_HARDENED = 0x80000000
-const PATH = [(10016 | HD_HARDENED) >>> 0, 0]
-
-const DEFAULT_NONCE =
-    '6c976aad136ecb3a9555afca84216f79cad017071c16fb9e930dfebeaa0fdd5506eede3366abd31b8dd3b80c3701096638be157eb065b1ba1cfa89d711fc3fa2'
+import { ETH_PATH } from '../helpers/crypto'
 
 type TrezorContext = {
     initiated: boolean
     activated: boolean
-    encryptionKey?: string
+    address?: string
     error?: Error
     trezor: typeof TrezorConnect
 }
@@ -24,7 +19,7 @@ const context = React.createContext<TrezorContext>({
 export const TrezorProvider: React.FC = ({ children }) => {
     const [initiated, setInitiated] = useState<boolean>(false)
     const [activated, setActivated] = useState<boolean>(false)
-    const [encryptionKey, setEncryptionKey] = useState<string>()
+    const [address, setAddress] = useState<string>()
 
     const [error, setError] = useState<Error | null>(null)
 
@@ -49,18 +44,12 @@ export const TrezorProvider: React.FC = ({ children }) => {
     useEffect(() => {
         if (!initiated) return
 
-        TrezorConnect.cipherKeyValue({
-            key: 'TWebTools: Activate ?',
-            value: DEFAULT_NONCE,
-            askOnDecrypt: true,
-            askOnEncrypt: true,
-            encrypt: true,
-            useEmptyPassphrase: true,
-            path: PATH,
+        TrezorConnect.ethereumGetAddress({
+            path: ETH_PATH,
         })
             .then((res) => {
                 if (res.success) {
-                    setEncryptionKey(res.payload.value)
+                    setAddress(res.payload.address)
                     setActivated(true)
                 } else {
                     setError(new Error('Activation failed.'))
@@ -91,7 +80,7 @@ export const TrezorProvider: React.FC = ({ children }) => {
             value={{
                 initiated,
                 activated,
-                encryptionKey,
+                address,
                 error: error || undefined,
                 trezor: TrezorConnect,
             }}
@@ -102,8 +91,8 @@ export const TrezorProvider: React.FC = ({ children }) => {
 }
 
 export const useTrezor = () => {
-    const { initiated, trezor, error, activated, encryptionKey } =
+    const { initiated, trezor, error, activated, address } =
         React.useContext(context)
 
-    return { initiated, trezor, error, activated, encryptionKey }
+    return { initiated, trezor, error, activated, address }
 }

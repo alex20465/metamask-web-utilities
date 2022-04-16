@@ -27,16 +27,14 @@ export const EncryptPage: React.FC = () => {
     const [encrypted, setEncrypted] = useState<string | null>(null)
     const { onCopy, hasCopied } = useClipboard(encrypted || '')
     const navigate = useNavigate()
-    const { encryptionKey } = useTrezor()
+    const { address } = useTrezor()
 
     const onEncrypt = useCallback(async () => {
-        if (!encryptionKey) {
-            throw new Error('No encryption key')
-        }
-        const encryptedContent = await encryptText(encryptionKey, content)
+        if (!address) return
+        const encryptedContent = await encryptText(address, content)
         setEncrypted(encryptedContent)
         setContent('') // unset secret message
-    }, [content, encryptionKey])
+    }, [content, address])
 
     const onChangeContent = useCallback(
         (event: React.ChangeEvent<HTMLTextAreaElement>) =>
