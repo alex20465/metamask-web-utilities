@@ -93,7 +93,7 @@ export const DecryptPage: React.FC = () => {
                         value={content}
                         rows={10}
                         onChange={onChangeContent}
-                        placeholder="U2FsdGVkX18GA7U9KuP+tUXeSmpuNV5G6/SV..."
+                        placeholder="de42f203f993635014edcb91..."
                     />
                     <HStack>
                         <IconButton

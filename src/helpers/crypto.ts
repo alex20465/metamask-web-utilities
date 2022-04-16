@@ -31,16 +31,37 @@ export const decryptText = async (
     }
 }
 
+export const verifyText = async (
+    address: string,
+    signature: string,
+    text: string
+): Promise<boolean> => {
+    const res = await TrezorConnect.ethereumVerifyMessage({
+        address,
+        message: text,
+        signature: signature,
+    })
+
+    if (res.success && res.payload.message === 'Message verified') {
+        return true
+    } else {
+        return false
+    }
+}
+
 export const signText = async (
     secret: string,
     text: string
-): Promise<string> => {
-    const res = await requestSecret('TWebTools: Secret Key Access ?', secret)
+): Promise<{ address: string; signature: string }> => {
+    const res = await TrezorConnect.ethereumSignMessage({
+        message: text,
+        path: "m/44'/60'/0'/0/0",
+    })
 
-    if (res.success && res.payload.value.length === 128) {
-        return CryptoJS.HmacSHA1(text, res.payload.value).toString()
+    if (res.success) {
+        return res.payload
     } else {
-        throw new Error('Failed to request signature')
+        throw new Error('Failed to request signature: ' + res.payload.error)
     }
 }
 

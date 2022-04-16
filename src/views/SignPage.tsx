@@ -2,6 +2,8 @@ import { ArrowBackIcon } from '@chakra-ui/icons/src/ArrowBack'
 import {
     Button,
     Center,
+    FormControl,
+    FormLabel,
     Heading,
     HStack,
     IconButton,
@@ -26,6 +28,7 @@ import { useTrezor } from '../providers/trezor'
 export const SignPage: React.FC = () => {
     const [content, setContent] = useState<string>('')
     const [signature, setSignature] = useState<string | null>(null)
+    const [address, setAddress] = useState<string | null>(null)
     const [error, setError] = useState<Error | null>(null)
     const { onCopy, hasCopied } = useClipboard(signature || '')
 
@@ -34,7 +37,9 @@ export const SignPage: React.FC = () => {
 
     const onSign = useCallback(async () => {
         if (!encryptionKey) return
-        setSignature(await signText(encryptionKey, content))
+        const { address, signature } = await signText(encryptionKey, content)
+        setSignature(signature)
+        setAddress(address)
     }, [content, encryptionKey])
 
     const onChangeContent = useCallback(
@@ -63,7 +68,14 @@ export const SignPage: React.FC = () => {
                     </ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <Input value={signature || ''} />
+                        <FormControl>
+                            <FormLabel>Address</FormLabel>
+                            <Input value={address || ''} />
+                        </FormControl>
+                        <FormControl label="Signature">
+                            <FormLabel>Signature</FormLabel>
+                            <Input value={signature || ''} />
+                        </FormControl>
                     </ModalBody>
                     <ModalFooter>
                         <Button

@@ -8,6 +8,7 @@ import { extendTheme, ChakraProvider, ThemeConfig } from '@chakra-ui/react'
 import { EncryptPage } from '../views/EncryptPage'
 import { DecryptPage } from '../views/DecryptPage'
 import { SignPage } from '../views/SignPage'
+import { VerifyPage } from '../views/VerifyPage'
 
 const colors = {}
 
@@ -40,6 +41,7 @@ function App() {
                         <Route path="/encrypt" element={<EncryptPage />} />
                         <Route path="/decrypt" element={<DecryptPage />} />
                         <Route path="/sign" element={<SignPage />} />
+                        <Route path="/verify" element={<VerifyPage />} />
                     </Routes>
                 </HashRouter>
             </TrezorProvider>

@@ -30,6 +30,7 @@ export const TrezorProvider: React.FC = ({ children }) => {
 
     useEffect(() => {
         TrezorConnect.init({
+            popup: true,
             manifest: {
                 appUrl: 'http://localhost:3000/',
                 email: 'fotiadis@alexandros.blue',
