@@ -19,6 +19,7 @@ import {
     useClipboard,
     VStack,
 } from '@chakra-ui/react'
+import { useMetaMask } from 'metamask-react'
 import React, { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { signText } from '../helpers/crypto'
@@ -27,17 +28,15 @@ import { BaseLayout } from '../layouts/BaseLayout'
 export const SignPage: React.FC = () => {
     const [content, setContent] = useState<string>('')
     const [signature, setSignature] = useState<string | null>(null)
-    const [address, setAddress] = useState<string | null>(null)
     const [error, setError] = useState<Error | null>(null)
     const { onCopy, hasCopied } = useClipboard(signature || '')
-
+    const { account } = useMetaMask()
     const navigate = useNavigate()
 
     const onSign = useCallback(async () => {
-        const { address, signature } = await signText(content)
-        setSignature(signature)
-        setAddress(address)
-    }, [content])
+        if (!account) return
+        setSignature(await signText(account, content))
+    }, [content, account])
 
     const onChangeContent = useCallback(
         (event: React.ChangeEvent<HTMLTextAreaElement>) =>
@@ -67,7 +66,7 @@ export const SignPage: React.FC = () => {
                     <ModalBody>
                         <FormControl>
                             <FormLabel>Address</FormLabel>
-                            <Input value={address || ''} />
+                            <Input value={account || ''} />
                         </FormControl>
                         <FormControl label="Signature">
                             <FormLabel>Signature</FormLabel>

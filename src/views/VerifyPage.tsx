@@ -15,25 +15,24 @@ import {
     ModalFooter,
     ModalHeader,
     ModalOverlay,
+    Text,
     Textarea,
     VStack,
 } from '@chakra-ui/react'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { verifyText } from '../helpers/crypto'
 import { BaseLayout } from '../layouts/BaseLayout'
 
 import { CheckCircleIcon, NotAllowedIcon } from '@chakra-ui/icons'
-import { useTrezor } from '../providers/trezor'
+
+import { useMetaMask } from 'metamask-react'
 export const VerifyPage: React.FC = () => {
     const [content, setContent] = useState<string>('')
     const [signature, setSignature] = useState<string | null>(null)
-    const { address: currentAddress } = useTrezor()
-    const [address, setAddress] = useState<string | null>(
-        currentAddress || null
-    )
-    const [verified, setIsVerified] = useState<boolean | null>(null)
-
+    const { account } = useMetaMask()
+    const [address, setAddress] = useState<string | null>(account || null)
+    const [signer, setSigner] = useState<string | null>(null)
     const [error, setError] = useState<Error | null>(null)
 
     const navigate = useNavigate()
@@ -41,7 +40,7 @@ export const VerifyPage: React.FC = () => {
     const onVerify = useCallback(async () => {
         if (!signature || !address) return
 
-        setIsVerified(await verifyText(address, signature, content))
+        setSigner(await verifyText(signature, content))
     }, [content, address, signature])
 
     const onChangeContent = useCallback(
@@ -49,6 +48,9 @@ export const VerifyPage: React.FC = () => {
             setContent(event.target.value),
         []
     )
+
+    useEffect(() => setAddress(account), [account])
+
     return (
         <BaseLayout
             error={error || undefined}
@@ -59,7 +61,7 @@ export const VerifyPage: React.FC = () => {
         >
             <Modal
                 onClose={() => setSignature(null)}
-                isOpen={signature !== null && verified !== null}
+                isOpen={signature !== null && signer !== null}
             >
                 <ModalOverlay opacity={0.3} />
                 <ModalContent>
@@ -70,7 +72,7 @@ export const VerifyPage: React.FC = () => {
                     </ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <Center h="100%" hidden={verified !== true}>
+                        <Center h="100%" hidden={address !== signer}>
                             <VStack>
                                 <CheckCircleIcon
                                     color="green.200"
@@ -78,10 +80,12 @@ export const VerifyPage: React.FC = () => {
                                     p={6}
                                 />
                                 <Heading color="green.200">Verified</Heading>
+                                <Heading>Signer</Heading>
+                                <Text>{signer}</Text>
                             </VStack>
                         </Center>
 
-                        <Center h="100%" hidden={verified !== false}>
+                        <Center h="100%" hidden={address === signer}>
                             <VStack>
                                 <NotAllowedIcon
                                     color="red.200"
@@ -89,6 +93,8 @@ export const VerifyPage: React.FC = () => {
                                     p={6}
                                 />
                                 <Heading color="red.200">Unverified</Heading>
+                                <Heading>Signer</Heading>
+                                <Text>{signer}</Text>
                             </VStack>
                         </Center>
                     </ModalBody>
@@ -96,7 +102,7 @@ export const VerifyPage: React.FC = () => {
                         <Button
                             width={'100%'}
                             colorScheme={'blue'}
-                            onClick={() => setIsVerified(null)}
+                            onClick={() => setSigner(null)}
                         >
                             OK
                         </Button>
@@ -147,7 +153,7 @@ export const VerifyPage: React.FC = () => {
                             width={'100%'}
                             disabled={
                                 content.length === 0 ||
-                                signature?.length !== 130 ||
+                                signature?.length !== 132 ||
                                 address?.length !== 42
                             }
                             onClick={onVerify}

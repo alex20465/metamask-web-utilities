@@ -20,25 +20,26 @@ import { useNavigate } from 'react-router-dom'
 import { decryptText } from '../helpers/crypto'
 import { BaseLayout } from '../layouts/BaseLayout'
 import { ArrowBackIcon } from '@chakra-ui/icons/src/ArrowBack'
-import { useTrezor } from '../providers/trezor'
+
+import { useMetaMask } from 'metamask-react'
 
 export const DecryptPage: React.FC = () => {
     const [content, setContent] = useState<string>('')
     const [decrypted, setDecrypted] = useState<string | null>(null)
     const [error, setError] = useState<Error | null>(null)
     const { onCopy, hasCopied } = useClipboard(decrypted || '')
-    const { address } = useTrezor()
+    const { account } = useMetaMask()
     const navigate = useNavigate()
 
     const onDecrypt = useCallback(async () => {
-        if (!address) return
-        const d = await decryptText(address, content)
+        if (!account) return
+        const d = await decryptText(account, content)
 
         if (!d) {
             return setError(new Error('Decryption was unsuccessful.'))
         }
         setDecrypted(d)
-    }, [content, address])
+    }, [content, account])
 
     const onChangeContent = useCallback(
         (event: React.ChangeEvent<HTMLTextAreaElement>) =>

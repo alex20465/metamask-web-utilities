@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Box,
     HStack,
@@ -11,7 +11,8 @@ import {
     Button,
     VStack,
 } from '@chakra-ui/react'
-import { useTrezor } from '../providers/trezor'
+
+import { useMetaMask } from 'metamask-react'
 
 type Props = {
     error?: Error
@@ -23,8 +24,16 @@ export const BaseLayout: React.FC<Props> = ({
     error: pageError,
     onClearError,
 }) => {
-    const { error, initiated, activated, address } = useTrezor()
+    const [error, setError] = useState<Error | null>(null)
+
+    const { connect, status, account } = useMetaMask()
+
     const err = error || pageError
+
+    useEffect(() => {
+        if (status !== 'connected') connect().catch((err) => setError(err))
+    }, [])
+
     if (err) {
         return (
             <HStack h="100vh">
@@ -57,7 +66,7 @@ export const BaseLayout: React.FC<Props> = ({
         )
     }
 
-    if (!initiated || !activated) {
+    if (status !== 'connected') {
         return (
             <HStack h="100vh">
                 <Center flexGrow={1} h="100%">
@@ -72,7 +81,7 @@ export const BaseLayout: React.FC<Props> = ({
             <Box flexGrow={1} h="100%" width={'100%'} p={14}>
                 {children}
             </Box>
-            <Box p={2}>{address}</Box>
+            <Box p={2}>{account}</Box>
         </VStack>
     )
 }

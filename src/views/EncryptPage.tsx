@@ -19,22 +19,22 @@ import React, { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { encryptText } from '../helpers/crypto'
 import { BaseLayout } from '../layouts/BaseLayout'
-import { useTrezor } from '../providers/trezor'
 import { ArrowBackIcon } from '@chakra-ui/icons/src/ArrowBack'
-
+import { useMetaMask } from 'metamask-react'
 export const EncryptPage: React.FC = () => {
     const [content, setContent] = useState<string>('')
     const [encrypted, setEncrypted] = useState<string | null>(null)
     const { onCopy, hasCopied } = useClipboard(encrypted || '')
     const navigate = useNavigate()
-    const { address } = useTrezor()
+    const { account } = useMetaMask()
 
     const onEncrypt = useCallback(async () => {
-        if (!address) return
-        const encryptedContent = await encryptText(address, content)
+        if (!account) return
+
+        const encryptedContent = await encryptText(account, content)
         setEncrypted(encryptedContent)
         setContent('') // unset secret message
-    }, [content, address])
+    }, [content, account])
 
     const onChangeContent = useCallback(
         (event: React.ChangeEvent<HTMLTextAreaElement>) =>

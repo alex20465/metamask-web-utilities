@@ -1,23 +1,41 @@
-import CryptoJS from 'crypto-js'
-import TrezorConnect from 'trezor-connect'
+import type { ExternalProvider } from '@ethersproject/providers'
+import { Buffer } from 'buffer'
+import { bufferToHex } from 'ethereumjs-util'
+import { encrypt, recoverPersonalSignature } from '@metamask/eth-sig-util'
 
-const HD_HARDENED = 0x80000000
-const NONCE_PREFIX =
-    '6c976aad136ecb3a9555afca84216f79cad017071c16fb9e930dfebeaa0fdd55'
-export const PATH = [(10016 | HD_HARDENED) >>> 0, 0]
+const getProvider = (): Required<ExternalProvider> => {
+    const provider = (window as any).ethereum as Required<ExternalProvider>
+    if (!provider || !provider.request)
+        throw new Error('Etherium provider not accessible')
 
-export const ETH_PATH = "m/44'/60'/0'/0/0"
+    return provider
+}
 
 export const encryptText = async (
     address: string,
     text: string
 ): Promise<string> => {
-    const res = await requestSecret(address)
+    const provider = getProvider()
 
-    if (res.success && res.payload.value.length === 128) {
-        return CryptoJS.AES.encrypt(text, res.payload.value).toString()
+    const publicKey = await provider.request({
+        method: 'eth_getEncryptionPublicKey',
+        params: [address],
+    })
+
+    if (publicKey) {
+        return bufferToHex(
+            Buffer.from(
+                JSON.stringify(
+                    encrypt({
+                        publicKey,
+                        data: text,
+                        version: 'x25519-xsalsa20-poly1305',
+                    })
+                )
+            )
+        )
     } else {
-        console.error(res)
+        console.error(publicKey)
         throw new Error('Failed to request decryption')
     }
 }
@@ -26,61 +44,44 @@ export const decryptText = async (
     address: string,
     text: string
 ): Promise<string> => {
-    const res = await requestSecret(address)
-
-    if (res.success && res.payload.value.length === 128) {
-        return CryptoJS.AES.decrypt(text, res.payload.value, {}).toString(
-            CryptoJS.enc.Utf8
-        )
+    const provider = getProvider()
+    const decryptedMessage = await provider.request({
+        method: 'eth_decrypt',
+        params: [text, address],
+    })
+    console.log(decryptedMessage)
+    if (decryptedMessage) {
+        return decryptedMessage
     } else {
-        console.error(res)
         throw new Error('Failed to request decryption')
     }
 }
 
 export const verifyText = async (
-    address: string,
     signature: string,
     text: string
-): Promise<boolean> => {
-    const res = await TrezorConnect.ethereumVerifyMessage({
-        address,
-        message: text,
+): Promise<string> => {
+    return recoverPersonalSignature({
+        data: text,
         signature: signature,
     })
-
-    if (res.success && res.payload.message === 'Message verified') {
-        return true
-    } else {
-        return false
-    }
 }
 
 export const signText = async (
+    address: string,
     text: string
-): Promise<{ address: string; signature: string }> => {
-    const res = await TrezorConnect.ethereumSignMessage({
-        message: text,
-        path: "m/44'/60'/0'/0/0",
+): Promise<string> => {
+    const provider = getProvider()
+
+    const challenge = bufferToHex(Buffer.from(text))
+    const signature = provider.request({
+        method: 'personal_sign',
+        params: [challenge, address],
     })
 
-    if (res.success) {
-        return res.payload
+    if (signature) {
+        return signature
     } else {
-        console.error(res)
         throw new Error('Failed to request signature')
     }
-}
-
-const requestSecret = (address: string) => {
-    const nonce = CryptoJS.SHA256(address).toString()
-    return TrezorConnect.cipherKeyValue({
-        key: 'TWebTools: Secret Key Access ?',
-        value: NONCE_PREFIX + nonce,
-        askOnDecrypt: true,
-        askOnEncrypt: true,
-        encrypt: true,
-        useEmptyPassphrase: true,
-        path: PATH,
-    })
 }

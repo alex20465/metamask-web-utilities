@@ -3,13 +3,12 @@ import './App.css'
 
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import { IndexPage } from '../views/IndexPage'
-import { TrezorProvider } from '../providers/trezor'
 import { extendTheme, ChakraProvider, ThemeConfig } from '@chakra-ui/react'
 import { EncryptPage } from '../views/EncryptPage'
 import { DecryptPage } from '../views/DecryptPage'
 import { SignPage } from '../views/SignPage'
 import { VerifyPage } from '../views/VerifyPage'
-
+import { MetaMaskProvider } from 'metamask-react'
 const colors = {}
 
 const config = {
@@ -34,7 +33,7 @@ const theme = extendTheme({
 function App() {
     return (
         <ChakraProvider theme={theme}>
-            <TrezorProvider>
+            <MetaMaskProvider>
                 <HashRouter>
                     <Routes>
                         <Route path="/" element={<IndexPage />} />
@@ -44,7 +43,7 @@ function App() {
                         <Route path="/verify" element={<VerifyPage />} />
                     </Routes>
                 </HashRouter>
-            </TrezorProvider>
+            </MetaMaskProvider>
         </ChakraProvider>
     )
 }
