@@ -13,7 +13,7 @@ const colors = {}
 
 const config = {
     initialColorMode: 'dark',
-    useSystemColorMode: true,
+    useSystemColorMode: false,
 } as ThemeConfig
 
 const theme = extendTheme({

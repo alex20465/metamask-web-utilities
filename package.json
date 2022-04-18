@@ -1,5 +1,5 @@
 {
-  "name": "trezor-web-tools",
+  "name": "metamask-web-utils",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {

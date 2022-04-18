@@ -13,7 +13,7 @@ export const EncryptIcon: React.FC<IconProps> = ({ ...props }) => (
             data-name="New Gradient Swatch 1"
         >
             <stop offset="0" stopColor="#003f8a" />
-            <stop offset=".518" stopColor="#00d7df" />
+            <stop offset=".5" stopColor="#00d7df" />
             <stop offset="1" stopColor="#006df0" />
         </linearGradient>
         <linearGradient
@@ -37,6 +37,28 @@ export const EncryptIcon: React.FC<IconProps> = ({ ...props }) => (
     </Icon>
 )
 
+export const FoxIcon: React.FC<IconProps> = ({ ...props }) => (
+    <Icon viewBox="0 0 512 512" {...props}>
+        <linearGradient
+            id="linear-gradient"
+            gradientUnits="userSpaceOnUse"
+            x1="3.2155735"
+            x2="501.51321"
+            y1="506.58417"
+            y2="4.8205814"
+        >
+            <stop offset="0" stopColor="#003f8a" id="stop2" />
+            <stop offset=".5" stopColor="#00d7df" id="stop4" />
+            <stop offset="1" stopColor="#006df0" id="stop8" />
+        </linearGradient>
+        <path
+            d="m394.436 293.188a8.532 8.532 0 0 0 -2.924-4.247l-93.579-73.019 30.749-27.222a10.74 10.74 0 0 0 3.193-12.5l-9.075-51.122a6.025 6.025 0 0 0 -.673-1.884 10.886 10.886 0 0 0 -.625-.979l.853-100a6.588 6.588 0 0 0 -10.538-5.332l-68.6 51.413a10.7 10.7 0 0 0 -1.625-.123h-68.458l-71.216-56.738a6.588 6.588 0 0 0 -10.69 5.246l1.344 97.428a10.655 10.655 0 0 0 -1.548 2.73 6.009 6.009 0 0 0 -.379 1.72l-4.433 63.2a10.712 10.712 0 0 0 3.839 11.3l24.5 20.717 85.589 194.332-60.424 41.65a8.582 8.582 0 0 0 .862 14.652l69.111 36.5a8.641 8.641 0 0 0 4.018.99 8.421 8.421 0 0 0 1.278-.1l151.631-23.151a8.626 8.626 0 0 0 5.649-3.447l52.266-72.169a8.632 8.632 0 0 0 1.254-7.547zm-14.65 1.824-12.44 14.329-146.417 86.114 75.212-165.71zm-165.725 86.54 1.387-92.642c.137-.108.276-.212.408-.328l67.54-59.791zm99.331-240.807 6.809 38.348a5.936 5.936 0 0 0 .228.886l-76.96 68.131zm-3.816-27.591-19.161-13.335 19.585-36.193zm.641-75.146-29.717 54.913-3.267-2.274 33-55.175zm-22.7 12.077-20.153 33.691-12.86-8.95zm-73.517 30.083h27.169l66.987 46.621-20.226 31.056-74.275 31.844zm-6.369 124.632a5.99 5.99 0 0 0 2.364-.485l66.142-28.358-51.591 79.218-10.173-8.895a7.864 7.864 0 0 0 -9.874-.428l-14.564 10.658-58.151-94.378 72.857 41.868a5.994 5.994 0 0 0 2.99.8zm-5.631-124.632-.341 108.284-83.078-47.752-13.07-21.212 65.889-39.32zm-97.541 25.974-.6-43.565 14.2 35.446zm55.5-33.123-18.433 11-16.3-38.671zm-54.333-43.288 25.5 60.5-2.626 1.569-25.1-62.63-.017-1.222zm-7.6 154.361a6.112 6.112 0 0 0 .108-.786l3.331-47.505 65.864 106.9zm37.419 47.359 67.73 57.275c.088.074.181.138.271.208l-1.4 93.729zm15.728 224.989 51.16-35.264 4.219 64.507zm58.227-178.168-13.4-11.33 12.941-9.469 12.051 10.536zm4.462 135.263 128.79-75.747-124.377 143.26zm149.527 53.471-134.914 20.594 157.425-181.321 27.916 91.1z"
+            fill="url(#linear-gradient)"
+            id="path11"
+        />
+    </Icon>
+)
+
 export const DecryptIcon: React.FC<IconProps> = ({ ...props }) => (
     <Icon viewBox="0 0 512 512" {...props}>
         <linearGradient
@@ -49,7 +71,7 @@ export const DecryptIcon: React.FC<IconProps> = ({ ...props }) => (
             data-name="New Gradient Swatch 1"
         >
             <stop offset="0" stopColor="#003f8a" />
-            <stop offset=".518" stopColor="#00d7df" />
+            <stop offset=".5" stopColor="#00d7df" />
             <stop offset="1" stopColor="#006df0" />
         </linearGradient>
         <linearGradient
@@ -85,7 +107,7 @@ export const SignIcon: React.FC<IconProps> = ({ ...props }) => (
             data-name="New Gradient Swatch 1"
         >
             <stop offset="0" stopColor="#003f8a" />
-            <stop offset=".518" stopColor="#00d7df" />
+            <stop offset=".5" stopColor="#00d7df" />
             <stop offset="1" stopColor="#006df0" />
         </linearGradient>
         <linearGradient
@@ -101,7 +123,7 @@ export const SignIcon: React.FC<IconProps> = ({ ...props }) => (
             x1="37.832"
             x2="534.923"
             xlinkHref="#a"
-            y1="518.56"
+            y1="5.56"
             y2="21.469"
         />
         <linearGradient
@@ -157,7 +179,7 @@ export const VerifyIcon: React.FC<IconProps> = ({ ...props }) => (
             gradientUnits="userSpaceOnUse"
         >
             <stop offset="0" stopColor="#003f8a" id="stop2" />
-            <stop offset="0.518" stopColor="#00d7df" id="stop4" />
+            <stop offset="0.5" stopColor="#00d7df" id="stop4" />
             <stop offset="1" stopColor="#006df0" id="stop6" />
         </linearGradient>
         <linearGradient
@@ -236,7 +258,7 @@ export const VerifyIcon: React.FC<IconProps> = ({ ...props }) => (
             data-name="New Gradient Swatch 1"
         >
             <stop offset="0" stopColor="#003f8a" id="stop2-9" />
-            <stop offset=".518" stopColor="#00d7df" id="stop4-3" />
+            <stop offset=".5" stopColor="#00d7df" id="stop4-3" />
             <stop offset="1" stopColor="#006df0" id="stop6-9" />
         </linearGradient>
         <linearGradient
@@ -252,7 +274,7 @@ export const VerifyIcon: React.FC<IconProps> = ({ ...props }) => (
             x1="37.832001"
             x2="534.92297"
             xlinkHref="#a-2"
-            y1="518.56"
+            y1="5.56"
             y2="21.469"
             gradientTransform="translate(101.00723,-22.512194)"
         />

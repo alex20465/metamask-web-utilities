@@ -33,11 +33,10 @@ export const BaseLayout: React.FC<Props> = ({
     useEffect(() => {
         if (status !== 'connected') connect().catch((err) => setError(err))
     }, [])
-
     if (err) {
         return (
-            <HStack h="100vh">
-                <Center flexGrow={1} h="100%">
+            <HStack minH="100vh">
+                <Center flexGrow={1} minH="100%">
                     <Alert
                         status="error"
                         maxW={400}
@@ -68,8 +67,8 @@ export const BaseLayout: React.FC<Props> = ({
 
     if (status !== 'connected') {
         return (
-            <HStack h="100vh">
-                <Center flexGrow={1} h="100%">
+            <HStack minH="100vh">
+                <Center flexGrow={1} minH="100%">
                     <Spinner size={'xl'} />
                 </Center>
             </HStack>
@@ -77,8 +76,8 @@ export const BaseLayout: React.FC<Props> = ({
     }
 
     return (
-        <VStack h={'100vh'}>
-            <Box flexGrow={1} h="100%" width={'100%'} p={14}>
+        <VStack minH={'100vh'}>
+            <Box flexGrow={1} minH="100%" width={'100%'} p={14}>
                 {children}
             </Box>
             <Box p={2}>{account}</Box>

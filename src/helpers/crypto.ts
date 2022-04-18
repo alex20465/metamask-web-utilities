@@ -3,12 +3,17 @@ import { Buffer } from 'buffer'
 import { bufferToHex } from 'ethereumjs-util'
 import { encrypt, recoverPersonalSignature } from '@metamask/eth-sig-util'
 
-const getProvider = (): Required<ExternalProvider> => {
-    const provider = (window as any).ethereum as Required<ExternalProvider>
-    if (!provider || !provider.request)
+declare global {
+    interface Window {
+        ethereum: Required<ExternalProvider>
+    }
+}
+
+const getProvider = () => {
+    if (!window.ethereum || !window.ethereum.request)
         throw new Error('Etherium provider not accessible')
 
-    return provider
+    return window.ethereum
 }
 
 export const encryptText = async (

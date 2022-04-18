@@ -1,23 +1,32 @@
-import { Center, Heading, HStack, IconButton, VStack } from '@chakra-ui/react'
+import { Center, Heading, IconButton, Stack, VStack } from '@chakra-ui/react'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { BaseLayout } from '../layouts/BaseLayout'
 import {
     DecryptIcon,
     EncryptIcon,
+    FoxIcon,
     SignIcon,
     VerifyIcon,
 } from '../icons/Encryption'
 export const IndexPage: React.FC = () => {
     return (
         <BaseLayout>
-            <Center h="100%">
+            <Center minH="100%">
                 <VStack>
                     <Heading as="h1" color="#00ebff" size={'2xl'} mb={'32px'}>
-                        Trezor Web Tools
+                        METAMASK Web Utilities
                     </Heading>
 
-                    <HStack gap={8}>
+                    <FoxIcon boxSize={'254px'} p={'32px'} />
+
+                    <Stack
+                        direction={{
+                            base: 'column',
+                            md: 'row',
+                        }}
+                        gap={8}
+                    >
                         <VStack gap={2}>
                             <IconButton
                                 variant="outline"
@@ -74,7 +83,7 @@ export const IndexPage: React.FC = () => {
                                 Verify
                             </Heading>
                         </VStack>
-                    </HStack>
+                    </Stack>
                 </VStack>
             </Center>
         </BaseLayout>
