@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
     Box,
     HStack,
@@ -10,6 +10,7 @@ import {
     AlertDescription,
     Button,
     VStack,
+    Text,
 } from '@chakra-ui/react'
 
 import { useMetaMask } from 'metamask-react'
@@ -32,9 +33,24 @@ export const BaseLayout: React.FC<Props> = ({
 
     useEffect(() => {
         if (status !== 'connected') connect().catch((err) => setError(err))
-    }, [])
-    if (err) {
-        return (
+    }, [status])
+
+    const ConnectComponent = useMemo(
+        () => (
+            <HStack minH="100vh">
+                <Center flexGrow={1} minH="100%">
+                    <VStack>
+                        <Spinner size={'xl'} />
+                        <Text>Connecting ...</Text>
+                    </VStack>
+                </Center>
+            </HStack>
+        ),
+        []
+    )
+
+    const ErrorComponent = useMemo(
+        () => (
             <HStack minH="100vh">
                 <Center flexGrow={1} minH="100%">
                     <Alert
@@ -46,33 +62,30 @@ export const BaseLayout: React.FC<Props> = ({
                         <AlertIcon boxSize={'40px'} />
                         <AlertTitle mt={4}>ERROR</AlertTitle>
                         <AlertDescription>
-                            <code>{err.message}</code>
+                            <code>{(err as Error)?.message}</code>
                         </AlertDescription>
-
-                        {onClearError && pageError ? (
-                            <Button
-                                colorScheme={'red'}
-                                variant={'link'}
-                                aria-label="close-alert"
-                                onClick={onClearError}
-                            >
-                                SKIP
-                            </Button>
-                        ) : null}
+                        <Button
+                            hidden={!onClearError || !pageError}
+                            colorScheme={'red'}
+                            variant={'link'}
+                            aria-label="close-alert"
+                            onClick={onClearError}
+                        >
+                            SKIP
+                        </Button>
                     </Alert>
                 </Center>
             </HStack>
-        )
+        ),
+        [err]
+    )
+
+    if (err) {
+        return ErrorComponent
     }
 
     if (status !== 'connected') {
-        return (
-            <HStack minH="100vh">
-                <Center flexGrow={1} minH="100%">
-                    <Spinner size={'xl'} />
-                </Center>
-            </HStack>
-        )
+        return ConnectComponent
     }
 
     return (

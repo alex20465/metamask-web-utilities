@@ -21,33 +21,44 @@ import { encryptText } from '../helpers/crypto'
 import { BaseLayout } from '../layouts/BaseLayout'
 import { ArrowBackIcon } from '@chakra-ui/icons/src/ArrowBack'
 import { useMetaMask } from 'metamask-react'
+
 export const EncryptPage: React.FC = () => {
     const [content, setContent] = useState<string>('')
     const [encrypted, setEncrypted] = useState<string | null>(null)
+    const [error, setError] = useState<Error | null>(null)
     const { onCopy, hasCopied } = useClipboard(encrypted || '')
     const navigate = useNavigate()
     const { account } = useMetaMask()
 
-    const onEncrypt = useCallback(async () => {
+    const encrypt = useCallback(async () => {
         if (!account) return
 
-        const encryptedContent = await encryptText(account, content)
-        setEncrypted(encryptedContent)
-        setContent('') // unset secret message
+        try {
+            const encryptedContent = await encryptText(account, content)
+            setEncrypted(encryptedContent)
+            setContent('') // unset secret message
+        } catch (err) {
+            setEncrypted(null)
+            setError(err as Error)
+        }
     }, [content, account])
 
-    const onChangeContent = useCallback(
+    const changeContent = useCallback(
         (event: React.ChangeEvent<HTMLTextAreaElement>) =>
             setContent(event.target.value),
         []
     )
 
+    const goBack = useCallback(() => navigate('/'), [])
+
+    const clear = useCallback(() => {
+        setError(null)
+        setEncrypted(null)
+    }, [])
+
     return (
-        <BaseLayout>
-            <Modal
-                onClose={() => setEncrypted(null)}
-                isOpen={encrypted !== null}
-            >
+        <BaseLayout error={error || undefined} onClearError={clear}>
+            <Modal onClose={clear} isOpen={encrypted !== null}>
                 <ModalOverlay opacity={0.3} />
                 <ModalContent>
                     <ModalHeader>
@@ -64,9 +75,7 @@ export const EncryptPage: React.FC = () => {
                             width={'100%'}
                             colorScheme={'green'}
                             disabled={hasCopied}
-                            onClick={() => {
-                                onCopy()
-                            }}
+                            onClick={onCopy}
                         >
                             {hasCopied ? 'copied !' : 'copy to clipboard'}
                         </Button>
@@ -81,20 +90,20 @@ export const EncryptPage: React.FC = () => {
                     <Textarea
                         value={content}
                         rows={10}
-                        onChange={onChangeContent}
+                        onChange={changeContent}
                         placeholder="my secret message ..."
                     />
                     <HStack>
                         <IconButton
                             aria-label="go-back"
-                            onClick={() => navigate('/')}
+                            onClick={goBack}
                             icon={<ArrowBackIcon />}
                         />
                         <Button
                             colorScheme={'green'}
                             width={'100%'}
                             disabled={content.length === 0}
-                            onClick={onEncrypt}
+                            onClick={encrypt}
                         >
                             encrypt
                         </Button>

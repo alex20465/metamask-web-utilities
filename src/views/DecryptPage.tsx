@@ -31,33 +31,35 @@ export const DecryptPage: React.FC = () => {
     const { account } = useMetaMask()
     const navigate = useNavigate()
 
-    const onDecrypt = useCallback(async () => {
+    const decrypt = useCallback(async () => {
         if (!account) return
-        const d = await decryptText(account, content)
-
-        if (!d) {
-            return setError(new Error('Decryption was unsuccessful.'))
+        try {
+            const d = await decryptText(account, content)
+            if (!d) {
+                throw new Error('Decryption was unsuccessful.')
+            }
+            setDecrypted(d)
+        } catch (err) {
+            setError(err as Error)
         }
-        setDecrypted(d)
     }, [content, account])
 
-    const onChangeContent = useCallback(
+    const changeContent = useCallback(
         (event: React.ChangeEvent<HTMLTextAreaElement>) =>
             setContent(event.target.value),
         []
     )
+
+    const goBack = useCallback(() => navigate('/'), [])
+
+    const clear = useCallback(() => {
+        setError(null)
+        setDecrypted(null)
+    }, [])
+
     return (
-        <BaseLayout
-            error={error || undefined}
-            onClearError={() => {
-                setError(null)
-                setDecrypted(null)
-            }}
-        >
-            <Modal
-                onClose={() => setDecrypted(null)}
-                isOpen={decrypted !== null}
-            >
+        <BaseLayout error={error || undefined} onClearError={clear}>
+            <Modal onClose={clear} isOpen={decrypted !== null}>
                 <ModalOverlay opacity={0.3} />
                 <ModalContent>
                     <ModalHeader>
@@ -74,9 +76,7 @@ export const DecryptPage: React.FC = () => {
                             width={'100%'}
                             colorScheme={'green'}
                             disabled={hasCopied}
-                            onClick={() => {
-                                onCopy()
-                            }}
+                            onClick={onCopy}
                         >
                             {hasCopied ? 'copied !' : 'copy to clipboard'}
                         </Button>
@@ -91,20 +91,20 @@ export const DecryptPage: React.FC = () => {
                     <Textarea
                         value={content}
                         rows={10}
-                        onChange={onChangeContent}
+                        onChange={changeContent}
                         placeholder="de42f203f993635014edcb91..."
                     />
                     <HStack>
                         <IconButton
                             aria-label="go-back"
-                            onClick={() => navigate('/')}
+                            onClick={goBack}
                             icon={<ArrowBackIcon />}
                         />
                         <Button
                             colorScheme={'green'}
                             width={'100%'}
                             disabled={content.length === 0}
-                            onClick={onDecrypt}
+                            onClick={decrypt}
                         >
                             decrypt
                         </Button>

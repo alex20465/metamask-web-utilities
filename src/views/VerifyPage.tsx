@@ -27,6 +27,7 @@ import { BaseLayout } from '../layouts/BaseLayout'
 import { CheckCircleIcon, NotAllowedIcon } from '@chakra-ui/icons'
 
 import { useMetaMask } from 'metamask-react'
+
 export const VerifyPage: React.FC = () => {
     const [content, setContent] = useState<string>('')
     const [signature, setSignature] = useState<string | null>(null)
@@ -37,30 +38,45 @@ export const VerifyPage: React.FC = () => {
 
     const navigate = useNavigate()
 
-    const onVerify = useCallback(async () => {
+    const verify = useCallback(async () => {
         if (!signature || !address) return
 
-        setSigner(await verifyText(signature, content))
+        try {
+            setSigner(await verifyText(signature, content))
+        } catch (err) {
+            setError(err as Error)
+        }
     }, [content, address, signature])
 
-    const onChangeContent = useCallback(
+    const changeContent = useCallback(
         (event: React.ChangeEvent<HTMLTextAreaElement>) =>
             setContent(event.target.value),
         []
     )
 
+    const clearError = useCallback(() => {
+        setError(null)
+        setSignature(null)
+    }, [])
+
+    const goBack = useCallback(() => navigate('/'), [])
+
+    const changeSignature = useCallback<
+        React.ChangeEventHandler<HTMLInputElement>
+    >((ev) => setSignature(ev.target.value), [])
+
+    const changeAddress = useCallback<
+        React.ChangeEventHandler<HTMLInputElement>
+    >((ev) => setSignature(ev.target.value), [])
+
+    const resetSigner = useCallback(() => setSigner(null), [])
+
     useEffect(() => setAddress(account), [account])
 
     return (
-        <BaseLayout
-            error={error || undefined}
-            onClearError={() => {
-                setError(null)
-                setSignature(null)
-            }}
-        >
+        <BaseLayout error={error || undefined} onClearError={clearError}>
             <Modal
-                onClose={() => setSignature(null)}
+                onClose={clearError}
                 isOpen={signature !== null && signer !== null}
             >
                 <ModalOverlay opacity={0.3} />
@@ -102,7 +118,7 @@ export const VerifyPage: React.FC = () => {
                         <Button
                             width={'100%'}
                             colorScheme={'blue'}
-                            onClick={() => setSigner(null)}
+                            onClick={resetSigner}
                         >
                             OK
                         </Button>
@@ -120,7 +136,7 @@ export const VerifyPage: React.FC = () => {
                         <Input
                             placeholder="0x42E4739485FEB64E1CFA467C..."
                             value={address || ''}
-                            onChange={(ev) => setAddress(ev.target.value)}
+                            onChange={changeAddress}
                         />
                     </FormControl>
 
@@ -129,7 +145,7 @@ export const VerifyPage: React.FC = () => {
                         <Input
                             placeholder="f59df66bd01ac0af0f50d000..."
                             value={signature || ''}
-                            onChange={(ev) => setSignature(ev.target.value)}
+                            onChange={changeSignature}
                         />
                     </FormControl>
 
@@ -138,14 +154,14 @@ export const VerifyPage: React.FC = () => {
                         <Textarea
                             value={content}
                             rows={5}
-                            onChange={onChangeContent}
+                            onChange={changeContent}
                             placeholder="signed message ..."
                         />
                     </FormControl>
                     <HStack>
                         <IconButton
                             aria-label="go-back"
-                            onClick={() => navigate('/')}
+                            onClick={goBack}
                             icon={<ArrowBackIcon />}
                         />
                         <Button
@@ -156,7 +172,7 @@ export const VerifyPage: React.FC = () => {
                                 signature?.length !== 132 ||
                                 address?.length !== 42
                             }
-                            onClick={onVerify}
+                            onClick={verify}
                         >
                             verify
                         </Button>

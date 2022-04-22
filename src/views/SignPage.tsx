@@ -33,28 +33,30 @@ export const SignPage: React.FC = () => {
     const { account } = useMetaMask()
     const navigate = useNavigate()
 
-    const onSign = useCallback(async () => {
+    const sign = useCallback(async () => {
         if (!account) return
-        setSignature(await signText(account, content))
+        try {
+            setSignature(await signText(account, content))
+        } catch (err) {
+            setError(err as Error)
+        }
     }, [content, account])
 
-    const onChangeContent = useCallback(
+    const changeContent = useCallback(
         (event: React.ChangeEvent<HTMLTextAreaElement>) =>
             setContent(event.target.value),
         []
     )
+    const clear = useCallback(() => {
+        setError(null)
+        setSignature(null)
+    }, [])
+
+    const goBack = useCallback(() => navigate('/'), [])
+
     return (
-        <BaseLayout
-            error={error || undefined}
-            onClearError={() => {
-                setError(null)
-                setSignature(null)
-            }}
-        >
-            <Modal
-                onClose={() => setSignature(null)}
-                isOpen={signature !== null}
-            >
+        <BaseLayout error={error || undefined} onClearError={clear}>
+            <Modal onClose={clear} isOpen={signature !== null}>
                 <ModalOverlay opacity={0.3} />
                 <ModalContent>
                     <ModalHeader>
@@ -78,9 +80,7 @@ export const SignPage: React.FC = () => {
                             width={'100%'}
                             colorScheme={'green'}
                             disabled={hasCopied}
-                            onClick={() => {
-                                onCopy()
-                            }}
+                            onClick={onCopy}
                         >
                             {hasCopied ? 'copied !' : 'copy to clipboard'}
                         </Button>
@@ -95,20 +95,20 @@ export const SignPage: React.FC = () => {
                     <Textarea
                         value={content}
                         rows={10}
-                        onChange={onChangeContent}
+                        onChange={changeContent}
                         placeholder="sign message ..."
                     />
                     <HStack>
                         <IconButton
                             aria-label="go-back"
-                            onClick={() => navigate('/')}
+                            onClick={goBack}
                             icon={<ArrowBackIcon />}
                         />
                         <Button
                             colorScheme={'green'}
                             width={'100%'}
                             disabled={content.length === 0}
-                            onClick={onSign}
+                            onClick={sign}
                         >
                             sign
                         </Button>
