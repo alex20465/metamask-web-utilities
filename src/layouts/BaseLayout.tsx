@@ -12,7 +12,6 @@ import {
     VStack,
     Text,
     Link,
-    Divider,
 } from '@chakra-ui/react'
 
 import { useMetaMask } from 'metamask-react'
@@ -97,11 +96,11 @@ export const BaseLayout: React.FC<Props> = ({
                 {children}
             </Box>
             <Box p={2} color="gray">
-                Open Source by{' '}
+                &copy; 2022{' '}
                 <Link href="https://alexandros.blue">Alexandros Fotiadis</Link>
                 {' - '}
                 <Link href="https://github.com/alex20465/metamask-web-utilities">
-                    Github Repository
+                    Github
                 </Link>
             </Box>
         </VStack>
