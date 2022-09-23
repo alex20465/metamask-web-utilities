@@ -1,7 +1,5 @@
 # Metamask Web Utilities
 
-## [webutils.app.greate.eu](https://webutils.app.greate.eu)
-
 ![screenshot](./assets/screenshot.png)
 
 
